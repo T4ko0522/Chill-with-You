@@ -18,7 +18,7 @@ class VolumeSyncStateTests(unittest.TestCase):
                     "mcs",
                     "-langversion:7.2",
                     f"-out:{executable}",
-                    str(ROOT / "plugin/VolumeSyncState.cs"),
+                    str(ROOT / "plugin/spotify/VolumeSyncState.cs"),
                     str(ROOT / "tests/VolumeSyncStateProbe.cs"),
                 ],
                 check=True,

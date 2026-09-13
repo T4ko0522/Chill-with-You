@@ -12,6 +12,13 @@
       packages = forAllSystems (system:
         let
           pkgs = import nixpkgs { inherit system; };
+          settings = import ./settings.nix;
+          outfitSources = pkgs.lib.fileset.toSource {
+            root = ./.;
+            fileset = pkgs.lib.fileset.unions [
+              ./installer.py ./plugin_build.py ./install_outfit.py ./plugin/outfit
+            ];
+          };
 
           bepInExArchive = pkgs.fetchurl {
             url = "https://github.com/BepInEx/BepInEx/releases/download/v5.4.23.5/BepInEx_win_x64_5.4.23.5.zip";
@@ -30,9 +37,10 @@
 
           installer = pkgs.writeShellApplication {
             name = "chill-with-you-install";
+            runtimeInputs = pkgs.lib.optional settings.defaultOutfit pkgs.mono;
             text = ''
               export CHILL_WITH_YOU_PAYLOAD=${payload}
-              exec ${pkgs.python3}/bin/python3 ${./installer.py} "$@"
+              exec ${pkgs.python3}/bin/python3 ${if settings.defaultOutfit then "${outfitSources}/install_outfit.py" else ./installer.py} "$@"
             '';
           };
 
@@ -48,14 +56,14 @@
           default = launcher;
           inherit installer launcher payload;
           spotify-launcher = spotify.launcher;
-          spotify-installer = spotify.installer;
+          plugin-installer = spotify.installer;
         });
 
       apps = forAllSystems (system: {
-        spotify-install = {
+        plugin-install = {
           type = "app";
-          program = "${self.packages.${system}.spotify-installer}/bin/chill-with-you-spotify-install";
-          meta.description = "Build and install the Spotify integration with the managed MOD payload";
+          program = "${self.packages.${system}.plugin-installer}/bin/chill-with-you-plugin-install";
+          meta.description = "Build and install the configured plugins with BepInEx";
         };
         spotify = {
           type = "app";

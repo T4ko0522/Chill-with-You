@@ -18,7 +18,7 @@ class ControlCommandStateTests(unittest.TestCase):
                     "mcs",
                     "-langversion:7.2",
                     f"-out:{executable}",
-                    str(ROOT / "plugin/ControlCommandState.cs"),
+                    str(ROOT / "plugin/spotify/ControlCommandState.cs"),
                     str(ROOT / "tests/ControlCommandStateProbe.cs"),
                 ],
                 check=True,

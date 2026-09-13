@@ -14,7 +14,7 @@ from pathlib import Path
 TOKEN = "bridge-transport-test-token"
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 PROBE_SOURCE = Path(__file__).with_name("BridgeTransportProbe.cs")
-BRIDGE_SOURCE = REPOSITORY_ROOT / "plugin" / "BridgeRequest.cs"
+BRIDGE_SOURCE = REPOSITORY_ROOT / "plugin" / "spotify" / "BridgeRequest.cs"
 COMMAND_BODY = json.dumps({"command": "play"}, separators=(",", ":")).encode()
 
 

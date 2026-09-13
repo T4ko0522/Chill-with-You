@@ -6,7 +6,7 @@ Windows 版「Chill with You Lo-Fi Story」を Proton で起動し、 BepInEx �
 ## 導入
 
 ```sh
-nix run path:.#install       # ゲームに BepInEx を配置
+nix run path:.#install       # BepInEx と通常衣装固定プラグインを配置
 nix profile add path:.      # 起動ラッパーをインストール
 ```
 
@@ -22,3 +22,11 @@ Steam のプロパティで、このゲームの起動オプションを次に�
 /home/username/.nix-profile/bin/chill-with-you-modded %command%
 ```
 ラッパーが、この起動にだけ `winhttp` の DLL override を設定します。
+
+## 通常衣装の固定
+
+`settings.nix` の `defaultOutfit = true;` で、日替わりの衣装を通常のジャケット姿に固定します。Spotify とは独立したプラグインで、Chirarism Satone 自体は各自で導入してください。
+
+ゲームを終了してから導入コマンドを実行してください。Spotify も使う場合は `nix run path:.#plugin-install` で両プラグインを導入します。`#install` は Spotify プラグインを含まない構成に更新します。
+
+固定を解除するには `defaultOutfit = false;` に変更し、同じ導入コマンドを再実行します。手動導入した MOD は保持されます。

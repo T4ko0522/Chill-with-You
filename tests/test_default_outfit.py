@@ -1,4 +1,4 @@
-"""Behaviour test for artwork rotation across repeated UI renders."""
+"""Behaviour tests for the default-outfit BepInEx plugin."""
 
 from pathlib import Path
 import subprocess
@@ -9,17 +9,17 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class ArtworkRotationStateTests(unittest.TestCase):
-    def test_rotates_once_per_playing_frame_and_holds_while_stopped(self) -> None:
-        with tempfile.TemporaryDirectory(prefix="artwork-rotation-") as directory:
+class DefaultOutfitPluginTests(unittest.TestCase):
+    def test_only_the_skin_passed_to_costume_rendering_is_forced_to_default(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="default-outfit-") as directory:
             executable = Path(directory) / "probe.exe"
             subprocess.run(
                 [
                     "mcs",
                     "-langversion:7.2",
                     f"-out:{executable}",
-                    str(ROOT / "plugin/spotify/ArtworkRotationState.cs"),
-                    str(ROOT / "tests/ArtworkRotationStateProbe.cs"),
+                    str(ROOT / "plugin/outfit/DefaultOutfitPlugin.cs"),
+                    str(ROOT / "tests/DefaultOutfitProbe.cs"),
                 ],
                 check=True,
             )

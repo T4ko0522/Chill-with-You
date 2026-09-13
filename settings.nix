@@ -1,0 +1,3 @@
+{
+  defaultOutfit = true;
+}

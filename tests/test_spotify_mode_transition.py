@@ -18,7 +18,7 @@ class SpotifyModeTransitionTests(unittest.TestCase):
                     "mcs",
                     "-langversion:7.2",
                     f"-out:{executable}",
-                    str(ROOT / "plugin/SpotifyModeTransition.cs"),
+                    str(ROOT / "plugin/spotify/SpotifyModeTransition.cs"),
                     str(ROOT / "tests/SpotifyModeTransitionProbe.cs"),
                 ],
                 check=True,

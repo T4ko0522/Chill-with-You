@@ -52,11 +52,10 @@ def _validate_relative_path(value: str, *, allow_chirarism: bool = False) -> Pat
     if path.is_absolute():
         raise InstallError(f"invalid managed path: {value!r}")
     is_core_file = len(path.parts) >= 3 and path.parts[:2] == ("BepInEx", "core")
-    is_mod_file = path.parts == (
-        "BepInEx",
-        "plugins",
-        "ChillSpotify.dll",
-    ) or (allow_chirarism and _is_chirarism_path(path))
+    is_mod_file = path.parts in {
+        ("BepInEx", "plugins", "ChillSpotify.dll"),
+        ("BepInEx", "plugins", "ChillDefaultOutfit.dll"),
+    } or (allow_chirarism and _is_chirarism_path(path))
     if value not in ROOT_PAYLOAD_FILES and not is_core_file and not is_mod_file:
         raise InstallError(f"path is outside the managed payload: {value!r}")
     return Path(*path.parts)

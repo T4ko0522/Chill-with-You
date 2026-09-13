@@ -1,10 +1,12 @@
 { pkgs, payload }:
 let
+  settings = import ./settings.nix;
   python = pkgs.python3.withPackages (ps: [ ps.dbus-next ]);
   sources = pkgs.lib.fileset.toSource {
     root = ./.;
     fileset = pkgs.lib.fileset.unions [
       ./launcher.py ./spotify_bridge.py ./installer.py ./install_spotify.py ./plugin
+      ./plugin_build.py ./install_outfit.py
     ];
   };
 in
@@ -17,11 +19,11 @@ in
   };
 
   installer = pkgs.writeShellApplication {
-    name = "chill-with-you-spotify-install";
+    name = "chill-with-you-plugin-install";
     runtimeInputs = [ pkgs.mono ];
     text = ''
       export CHILL_WITH_YOU_PAYLOAD=${payload}
-      exec ${python}/bin/python3 ${sources}/install_spotify.py "$@"
+      exec ${python}/bin/python3 ${sources}/install_spotify.py ${pkgs.lib.optionalString settings.defaultOutfit "--default-outfit"} "$@"
     '';
   };
 
@@ -35,6 +37,9 @@ in
     cp ${./tests/test_spotify_bridge.py} tests/test_spotify_bridge.py
     cp ${./tests/test_launcher.py} tests/test_launcher.py
     cp ${./tests/test_spotify_install.py} tests/test_spotify_install.py
+    cp ${./tests/test_outfit_install.py} tests/test_outfit_install.py
+    cp ${./tests/test_default_outfit.py} tests/test_default_outfit.py
+    cp ${./tests/DefaultOutfitProbe.cs} tests/DefaultOutfitProbe.cs
     cp ${./tests/test_mpris_integration.py} tests/test_mpris_integration.py
     cp ${./tests/test_bridge_transport.py} tests/test_bridge_transport.py
     cp ${./tests/BridgeTransportProbe.cs} tests/BridgeTransportProbe.cs
@@ -46,12 +51,13 @@ in
     cp ${./tests/VolumeSyncStateProbe.cs} tests/VolumeSyncStateProbe.cs
     cp ${./tests/test_control_command_state.py} tests/test_control_command_state.py
     cp ${./tests/ControlCommandStateProbe.cs} tests/ControlCommandStateProbe.cs
-    mkdir plugin
-    cp ${sources}/plugin/BridgeRequest.cs plugin/BridgeRequest.cs
-    cp ${sources}/plugin/SpotifyModeTransition.cs plugin/SpotifyModeTransition.cs
-    cp ${sources}/plugin/ArtworkRotationState.cs plugin/ArtworkRotationState.cs
-    cp ${sources}/plugin/VolumeSyncState.cs plugin/VolumeSyncState.cs
-    cp ${sources}/plugin/ControlCommandState.cs plugin/ControlCommandState.cs
+    mkdir -p plugin/spotify
+    cp -R ${sources}/plugin/outfit plugin/outfit
+    cp ${sources}/plugin/spotify/BridgeRequest.cs plugin/spotify/BridgeRequest.cs
+    cp ${sources}/plugin/spotify/SpotifyModeTransition.cs plugin/spotify/SpotifyModeTransition.cs
+    cp ${sources}/plugin/spotify/ArtworkRotationState.cs plugin/spotify/ArtworkRotationState.cs
+    cp ${sources}/plugin/spotify/VolumeSyncState.cs plugin/spotify/VolumeSyncState.cs
+    cp ${sources}/plugin/spotify/ControlCommandState.cs plugin/spotify/ControlCommandState.cs
     python -m unittest discover -s tests -v
     touch "$out"
   '';
