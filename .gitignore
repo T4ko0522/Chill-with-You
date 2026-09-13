@@ -1,0 +1,6 @@
+*.7z
+*.zip
+.mod-staging/
+result
+result-*
+__pycache__/
