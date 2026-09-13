@@ -1,6 +1,6 @@
 # Chill With You and Spotify
 
-Windows 版「Chill with You Lo-Fi Story」を　Proton で起動し、 BepInEx を通じて、 Spotify と Chill with You の連携用のプラグインと bridge を起動します。
+Windows 版「Chill with You Lo-Fi Story」を Proton で起動し、 BepInEx を通じて、 Spotify と Chill with You の連携用のプラグインと bridge を起動します。
 
 ![ingame](ingame.png)
 ## 導入
