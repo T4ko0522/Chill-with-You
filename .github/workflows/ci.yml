@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "v*"
   pull_request:
   workflow_dispatch:
 
@@ -80,7 +78,7 @@ jobs:
           if-no-files-found: error
 
   release:
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: plugins
     runs-on: ubuntu-latest
     permissions:
@@ -95,10 +93,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
-            gh release upload "$GITHUB_REF_NAME" dist/*.dll --clobber
+          release_tag="build-$GITHUB_SHA"
+          release_title="Build ${GITHUB_SHA::7}"
+          if gh release view "$release_tag" >/dev/null 2>&1; then
+            gh release upload "$release_tag" dist/*.dll --clobber
           else
-            gh release create "$GITHUB_REF_NAME" dist/*.dll \
-              --verify-tag \
+            gh release create "$release_tag" dist/*.dll \
+              --target "$GITHUB_SHA" \
+              --title "$release_title" \
               --generate-notes
           fi
