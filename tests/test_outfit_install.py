@@ -6,15 +6,48 @@ import hashlib
 import json
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
 
 from installer import install
-from install_outfit import install_payload
+from install_outfit import install_payload, main
 
 
 class DefaultOutfitInstallTests(unittest.TestCase):
+    def test_build_only_does_not_require_the_game_executable(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            game = root / "game"
+            payload = root / "payload"
+            output = root / "ChillDefaultOutfit.dll"
+            (game / "Chill With You_Data/Managed").mkdir(parents=True)
+
+            with (
+                patch.object(
+                    sys,
+                    "argv",
+                    [
+                        "install_outfit.py",
+                        str(game),
+                        "--payload",
+                        str(payload),
+                        "--build-only",
+                        str(output),
+                    ],
+                ),
+                patch("install_outfit.build_plugin") as build_plugin,
+            ):
+                main()
+
+            build_plugin.assert_called_once_with(
+                game,
+                payload,
+                Path(__file__).parents[1] / "plugin/outfit",
+                output,
+            )
+
     @staticmethod
     def _fixture(root: Path) -> tuple[Path, Path, Path]:
         game = root / "game"

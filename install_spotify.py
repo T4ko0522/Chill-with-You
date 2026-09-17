@@ -21,14 +21,14 @@ def main() -> None:
     parser.add_argument("--default-outfit", action="store_true")
     arguments = parser.parse_args()
     game = arguments.game_directory.expanduser()
-    if not (game / GAME_EXECUTABLE).is_file():
-        parser.exit(1, f"error: game executable not found: {game / GAME_EXECUTABLE}\n")
     sources = Path(__file__).parent / "plugin" / "spotify"
     try:
         if arguments.build_only:
             build_plugin(game, arguments.payload, sources, arguments.build_only)
             print(f"Built {arguments.build_only}")
             return
+        if not (game / GAME_EXECUTABLE).is_file():
+            raise InstallError(f"game executable not found: {game / GAME_EXECUTABLE}")
         with tempfile.TemporaryDirectory(prefix="chill-spotify-payload-") as directory:
             payload = Path(directory) / "payload"
             stage_payload(arguments.payload, payload)

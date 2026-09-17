@@ -27,14 +27,14 @@ def main() -> None:
     parser.add_argument("--build-only", type=Path, metavar="OUTPUT_DLL")
     arguments = parser.parse_args()
     game = arguments.game_directory.expanduser()
-    if not (game / GAME_EXECUTABLE).is_file():
-        parser.exit(1, f"error: game executable not found: {game / GAME_EXECUTABLE}\n")
     sources = Path(__file__).parent / "plugin" / "outfit"
     try:
         if arguments.build_only:
             build_plugin(game, arguments.payload, sources, arguments.build_only)
             print(f"Built {arguments.build_only}")
             return
+        if not (game / GAME_EXECUTABLE).is_file():
+            raise InstallError(f"game executable not found: {game / GAME_EXECUTABLE}")
         install_payload(game, arguments.payload, sources)
     except (InstallError, OSError, subprocess.CalledProcessError) as error:
         parser.exit(1, f"error: {error}\n")

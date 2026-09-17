@@ -30,3 +30,14 @@ Steam のプロパティで、このゲームの起動オプションを次に�
 ゲームを終了してから導入コマンドを実行してください。Spotify も使う場合は `nix run path:.#plugin-install` で両プラグインを導入します。`#install` は Spotify プラグインを含まない構成に更新します。
 
 固定を解除するには `defaultOutfit = false;` に変更し、同じ導入コマンドを再実行します。手動導入した MOD は保持されます。
+
+## リリース
+
+GitHub Actions はテスト後に `ChillSpotify.dll` と `ChillDefaultOutfit.dll` をビルドします。`v` で始まるタグを push すると GitHub Release を作成し、両方の DLL を添付します。
+
+plugin のコンパイルにはゲームの Managed DLL が必要です。GitHub リポジトリに次の Repository Variables を設定してください。
+
+- `GAME_ASSEMBLIES_URL`: Managed DLL を収録した ZIP の公開 URL
+- `GAME_ASSEMBLIES_SHA256`: ZIP の SHA-256
+
+ZIP 内には `Assembly-CSharp.dll` を1つだけ含め、そのファイルと同じディレクトリにコンパイルで参照するすべての DLL を配置してください。ゲーム由来の DLL は Release には含まれません。
